@@ -1,0 +1,211 @@
+{
+  "course": [
+    {
+      "course_id": 1,
+      "course_code": "SOE206TC",
+      "title": "Database Development and Design"
+    },
+    {
+      "course_id": 2,
+      "course_code": "TEST002",
+      "title": "Course Isolation Test"
+    }
+  ],
+  "knowledge_point": [
+    {
+      "knowledge_point_id": 2,
+      "course_id": 2,
+      "name": "Third Normal Form",
+      "normalized_name": "third normal form",
+      "description": "A sample knowledge point for database testing"
+    },
+    {
+      "knowledge_point_id": 4,
+      "course_id": 1,
+      "name": "SQL JOIN",
+      "normalized_name": "sql join",
+      "description": "Combining rows from related database tables"
+    },
+    {
+      "knowledge_point_id": 8,
+      "course_id": 1,
+      "name": "Nested Queries",
+      "normalized_name": "nested queries",
+      "description": "SQL queries placed inside other queries to filter or compare data."
+    },
+    {
+      "knowledge_point_id": 9,
+      "course_id": 1,
+      "name": "Natural Join",
+      "normalized_name": "natural join",
+      "description": "A SQL join that automatically matches columns with the same names. Unrelated columns sharing a name can cause incorrect matching."
+    },
+    {
+      "knowledge_point_id": 10,
+      "course_id": 1,
+      "name": "SQL Views",
+      "normalized_name": "sql views",
+      "description": "Virtual tables defined by SQL queries that can simplify data access and restrict which information users can see."
+    },
+    {
+      "knowledge_point_id": 11,
+      "course_id": 2,
+      "name": "Natural Join",
+      "normalized_name": "natural join",
+      "description": "Synthetic demonstration record: independent TEST002 concept, not SOE206TC teaching content."
+    }
+  ],
+  "knowledge_point_alias": [
+    {
+      "alias_id": 2,
+      "knowledge_point_id": 2,
+      "alias": "3NF",
+      "normalized_alias": "3nf"
+    },
+    {
+      "alias_id": 4,
+      "knowledge_point_id": 4,
+      "alias": "JOIN",
+      "normalized_alias": "join"
+    },
+    {
+      "alias_id": 5,
+      "knowledge_point_id": 4,
+      "alias": "Relational Join",
+      "normalized_alias": "relational join"
+    },
+    {
+      "alias_id": 7,
+      "knowledge_point_id": 8,
+      "alias": "Subquery",
+      "normalized_alias": "subquery"
+    },
+    {
+      "alias_id": 8,
+      "knowledge_point_id": 8,
+      "alias": "Subqueries",
+      "normalized_alias": "subqueries"
+    },
+    {
+      "alias_id": 9,
+      "knowledge_point_id": 9,
+      "alias": "Natural Join Risk",
+      "normalized_alias": "natural join risk"
+    },
+    {
+      "alias_id": 10,
+      "knowledge_point_id": 9,
+      "alias": "Same-name Columns",
+      "normalized_alias": "same-name columns"
+    },
+    {
+      "alias_id": 11,
+      "knowledge_point_id": 10,
+      "alias": "Data Hiding",
+      "normalized_alias": "data hiding"
+    },
+    {
+      "alias_id": 12,
+      "knowledge_point_id": 10,
+      "alias": "Hide Salary",
+      "normalized_alias": "hide salary"
+    }
+  ],
+  "resource": [
+    {
+      "resource_id": 3,
+      "course_id": 2,
+      "title": "Course Isolation Test PDF",
+      "file_url": "/static/pdfs/test002_notes.pdf",
+      "total_pages": 12
+    },
+    {
+      "resource_id": 4,
+      "course_id": 1,
+      "title": "Lecture 2 - Intermediate SQL",
+      "file_url": "/static/pdfs/lec2_mid_sql.pdf",
+      "total_pages": 47
+    },
+    {
+      "resource_id": 5,
+      "course_id": 1,
+      "title": "Lab 2 - Intermediate SQL",
+      "file_url": "/static/pdfs/lab2_intermediate_sql.pdf",
+      "total_pages": 13
+    }
+  ],
+  "resource_location": [
+    {
+      "location_id": 3,
+      "course_id": 2,
+      "knowledge_point_id": 2,
+      "resource_id": 3,
+      "page_number": 3,
+      "note": "Independent course test"
+    },
+    {
+      "location_id": 6,
+      "course_id": 1,
+      "knowledge_point_id": 4,
+      "resource_id": 4,
+      "page_number": 16,
+      "note": "Join Condition"
+    },
+    {
+      "location_id": 7,
+      "course_id": 1,
+      "knowledge_point_id": 4,
+      "resource_id": 5,
+      "page_number": 5,
+      "note": "INNER JOIN example"
+    },
+    {
+      "location_id": 9,
+      "course_id": 1,
+      "knowledge_point_id": 8,
+      "resource_id": 5,
+      "page_number": 2,
+      "note": "Subquery example using average student age"
+    },
+    {
+      "location_id": 16,
+      "course_id": 1,
+      "knowledge_point_id": 9,
+      "resource_id": 4,
+      "page_number": 8,
+      "note": "Natural Join definition and syntax"
+    },
+    {
+      "location_id": 17,
+      "course_id": 1,
+      "knowledge_point_id": 9,
+      "resource_id": 4,
+      "page_number": 13,
+      "note": "Risk of incorrect matching between same-name columns"
+    },
+    {
+      "location_id": 18,
+      "course_id": 1,
+      "knowledge_point_id": 9,
+      "resource_id": 4,
+      "page_number": 14,
+      "note": "Using clause to specify matching columns"
+    },
+    {
+      "location_id": 19,
+      "course_id": 1,
+      "knowledge_point_id": 10,
+      "resource_id": 4,
+      "page_number": 25,
+      "note": "Using SQL views to hide instructor salary information"
+    },
+    {
+      "location_id": 20,
+      "course_id": 2,
+      "knowledge_point_id": 11,
+      "resource_id": 3,
+      "page_number": 4,
+      "note": "Synthetic course-isolation demonstration; TEST002 only."
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Log in — Knowledge Hub</title>
+  <link rel="stylesheet" href="/static/new/css/app.css">
+</head>
+<body>
+  {% from "new/_layout.html" import topbar %}
+  {{ topbar(false) }}
+
+  <div class="auth-wrap">
+    <aside class="auth-aside">
+      <div class="aside-brand">
+        <span class="brand-mark">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m15.6 8.4-2.1 5.1-5.1 2.1 2.1-5.1z"/></svg>
+        </span>
+        <span data-i18n="brand">Knowledge Hub</span>
+      </div>
+      <div>
+        <h2 data-i18n="asideTitle">Your semester, searchable.</h2>
+        <p data-i18n="asideDesc">Find any concept in the exact slide, then let AI turn a long deck into a few key points.</p>
+      </div>
+      <div class="aside-foot" data-i18n="asideFoot">Four courses · instant page lookup · AI summaries</div>
+    </aside>
+
+    <main class="auth-main">
+      <section class="card auth-card fade-up">
+        <span class="eyebrow" data-i18n="loginTitle">Welcome back</span>
+        <h2 style="margin-top:16px" data-i18n="loginSubtitle">Log in to continue</h2>
+
+        <form id="loginForm">
+          <label for="email" data-i18n="email">Email</label>
+          <input id="email" type="email" required autocomplete="username">
+
+          <label for="password" data-i18n="password">Password</label>
+          <input id="password" type="password" required autocomplete="current-password">
+
+          <div id="status" class="status hidden"></div>
+
+          <button class="btn" type="submit" data-i18n="login">Log in</button>
+        </form>
+
+        <p class="muted auth-alt">
+          <span data-i18n="noAccount">No account yet?</span>
+          <a href="/register" data-i18n="register">Sign up</a>
+        </p>
+        <p class="muted"><a href="/">&larr; <span data-i18n="backHome">Back to home</span></a></p>
+      </section>
+    </main>
+  </div>
+
+  <script src="/static/new/js/i18n.js"></script>
+  <script src="/static/new/js/sound.js"></script>
+  <script src="/static/new/js/common.js"></script>
+  <script src="/static/new/js/auth.js"></script>
+</body>
+</html>

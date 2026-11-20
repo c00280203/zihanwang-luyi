@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Knowledge Hub</title>
+  <link rel="stylesheet" href="/static/new/css/app.css">
+</head>
+<body>
+  {% from "new/_layout.html" import topbar %}
+  {{ topbar() }}
+
+  <main class="container">
+    <section class="hero">
+      <span class="eyebrow" data-i18n="searchHint">Type a concept or alias, then let Knowledge Hub do the digging.</span>
+      <h1 data-i18n="heroTitle">Find knowledge points in seconds</h1>
+      <p data-i18n="heroSubtitle">Search course materials and jump straight to the right page.</p>
+    </section>
+
+    <section class="card fade-up search-panel">
+      <label for="course" data-i18n="selectCourse">Select a course</label>
+      <select id="course">
+        <option value="all" data-i18n="allCourses">All courses (coarse search)</option>
+      </select>
+
+      <label for="keyword" data-i18n="keywordLabel">Keyword or question</label>
+      <div class="search-field">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+        <input id="keyword" type="text" maxlength="200" data-i18n-placeholder="1" data-i18n="searchPlaceholder" placeholder="Ask in your own words, e.g. I wanna study Algorithm">
+      </div>
+
+      <div class="row" style="margin-top:18px">
+        <button class="btn ai" id="aiSearchBtn" type="button">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.5l1.6 6.1 6.1 1.6-6.1 1.6-1.6 6.1-1.6-6.1-6.1-1.6 6.1-1.6z"/><path d="M19 15l.8 2.8 2.8.8-2.8.8-.8 2.8-.8-2.8-2.8-.8 2.8-.8z"/></svg>
+          <span data-i18n="aiSearch">AI Search</span>
+        </button>
+        <button class="btn" id="searchBtn" type="button" data-i18n="search">Search</button>
+        <button class="btn ghost" id="browseBtn" type="button" data-i18n="browseAll">Browse all</button>
+      </div>
+      <p class="muted ai-hint" data-i18n="aiHint">Tip: ask in your own words. AI matches meaning, not just keywords.</p>
+    </section>
+
+    <div id="status" class="status hidden"></div>
+    <div id="thinking" class="thinking-host hidden"></div>
+
+    <section id="aiAnswer" class="card ai-answer hidden">
+      <div class="ai-answer-head">
+        <span class="ai-answer-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l1.6 6.1 6.1 1.6-6.1 1.6-1.6 6.1-1.6-6.1-6.1-1.6 6.1-1.6z"/></svg>
+        </span>
+        <h3 data-i18n="aiAnswerTitle">AI answer</h3>
+        <span class="badge ai" data-i18n="aiBadge">AI matched</span>
+      </div>
+      <div id="aiAnswerText"></div>
+    </section>
+
+    <section id="results" class="grid"></section>
+    <section id="summaryPanel" class="card hidden"></section>
+
+    <section class="card fade-up library-panel">
+      <div class="library-head">
+        <h2 class="section-title" data-i18n="libraryTitle">Courseware</h2>
+        <span id="libraryCount" class="library-count muted"></span>
+      </div>
+      <div id="library" class="grid library-grid"></div>
+    </section>
+  </main>
+
+  <script src="/static/new/js/i18n.js"></script>
+  <script src="/static/new/js/sound.js"></script>
+  <script src="/static/new/js/common.js"></script>
+  <script src="/static/new/js/index.js"></script>
+</body>
+</html>

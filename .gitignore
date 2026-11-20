@@ -1,0 +1,16 @@
+.env
+.venv/
+.venv_bak_*/
+__pycache__/
+*.pyc
+.DS_Store
+.vscode/
+*.dump
+static/pdfs_backup_*
+.pgdata/
+.pg_runtime/
+.pg_setup.py
+.vercel/
+大三上课程/
+static/courseware/
+static/courseware/

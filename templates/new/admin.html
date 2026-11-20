@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Administration — Knowledge Hub</title>
+  <link rel="stylesheet" href="/static/new/css/app.css">
+</head>
+<body>
+  {% from "new/_layout.html" import topbar %}
+  {{ topbar() }}
+
+  <main class="container">
+    <section class="hero" style="padding:20px 8px 18px">
+      <span class="eyebrow" data-i18n="adminPanel">Administration</span>
+      <h1 style="font-size:30px" data-i18n="adminSubtitle">Manage accounts and courseware.</h1>
+    </section>
+
+    <div id="status" class="status hidden"></div>
+
+    <section class="card fade-up">
+      <h2 class="section-title" data-i18n="accountManagement">Account management</h2>
+      <div class="row" style="margin:12px 0 18px">
+        <input id="newEmail" type="email" placeholder="email@example.com" style="max-width:250px">
+        <input id="newPassword" type="password" placeholder="password" style="max-width:170px">
+        <select id="newRole" style="max-width:140px">
+          <option value="student" data-i18n="students">Students</option>
+          <option value="admin" data-i18n="admins">Administrators</option>
+        </select>
+        <button class="btn" id="addAccountBtn" type="button" data-i18n="addAccount">Add account</button>
+      </div>
+
+      <h3 data-i18n="admins">Administrators</h3>
+      <div class="table-scroll"><table id="adminTable"><thead><tr><th data-i18n="email">Email</th><th></th></tr></thead><tbody></tbody></table></div>
+
+      <h3 style="margin-top:20px" data-i18n="students">Students</h3>
+      <div class="table-scroll"><table id="studentTable"><thead><tr><th data-i18n="email">Email</th><th></th></tr></thead><tbody></tbody></table></div>
+    </section>
+
+    <section class="card fade-up">
+      <h2 class="section-title" data-i18n="coursewareManagement">Courseware management</h2>
+      <form id="uploadForm">
+        <label for="uploadCourse" data-i18n="selectCourse">Select a course</label>
+        <select id="uploadCourse"></select>
+
+        <label for="uploadTitle" data-i18n="title">Title (optional; file name is used when empty)</label>
+        <input id="uploadTitle" type="text">
+
+        <label data-i18n="file">Files (PDF / PPTX)</label>
+        <div id="dropzone" class="dropzone" role="button" tabindex="0">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg>
+          <strong data-i18n="dropTitle">Drop files here or click to choose</strong>
+          <span class="muted" data-i18n="dropHint">You can select several files at once.</span>
+        </div>
+        <input id="uploadFile" class="hidden" type="file" accept=".pdf,.pptx" multiple>
+        <div id="fileList" class="file-list"></div>
+
+        <button class="btn" type="submit" style="margin-top:16px" data-i18n="uploadBtn">Upload</button>
+      </form>
+
+      <h3 style="margin-top:26px" data-i18n="courseware">Courseware</h3>
+      <div class="table-scroll"><table id="resourceTable"><thead><tr>
+        <th data-i18n="title">Title</th><th>Course</th><th>Type</th><th></th>
+      </tr></thead><tbody></tbody></table></div>
+    </section>
+  </main>
+
+  <script src="/static/new/js/i18n.js"></script>
+  <script src="/static/new/js/sound.js"></script>
+  <script src="/static/new/js/common.js"></script>
+  <script src="/static/new/js/admin.js"></script>
+</body>
+</html>

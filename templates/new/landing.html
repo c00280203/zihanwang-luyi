@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Knowledge Hub — Learn faster</title>
+  <link rel="stylesheet" href="/static/new/css/app.css">
+</head>
+<body class="landing">
+  {% from "new/_layout.html" import topbar %}
+  {{ topbar() }}
+
+  <main class="container">
+    <section class="landing-hero">
+      <div class="landing-copy">
+        <span class="eyebrow" data-i18n="landingBadge">For curious students</span>
+        <h1><span data-i18n="landingTitleA">Turn lecture piles into a</span> <em data-i18n="landingTitleB">treasure map.</em></h1>
+        <p data-i18n="landingSubtitle">Search one concept, land on the exact slide, and let AI highlight what matters.</p>
+        <div class="landing-cta">
+          <a class="btn" href="/login" data-i18n="landingCta">Start exploring</a>
+          <a class="btn ghost" href="/register" data-i18n="landingSecondary">Create free account</a>
+        </div>
+        <p class="landing-note" data-i18n="landingNote">Four courses · 90+ courseware files · Instant page lookup</p>
+      </div>
+
+      <div class="mockup" aria-hidden="true">
+        <div class="mockup-bar"><i></i><i></i><i></i><span>knowledgehub.app</span></div>
+        <div class="mockup-search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+          <b>3NF</b><span data-i18n="mockupQuery">in all courses</span>
+        </div>
+        <div class="mockup-result">
+          <div class="r-head">
+            <strong data-i18n="mockupPoint">Third Normal Form</strong>
+            <span class="mini-pill" data-i18n="mockupCourse">SOE206TC · Database</span>
+          </div>
+          <div class="mockup-line"></div>
+          <div class="mockup-line short"></div>
+          <div class="mockup-page">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v5h4"/></svg>
+            <span data-i18n="mockupFile">Database_Design_Lecture.pdf</span>
+            <b data-i18n="mockupPage">Page 24</b>
+          </div>
+        </div>
+        <div class="mockup-float thinking-flow">
+          <div class="thinking-flow-card">
+            <span class="flow-spark" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l1.6 6.1 6.1 1.6-6.1 1.6-1.6 6.1-1.6-6.1-6.1-1.6 6.1-1.6z"/></svg>
+            </span>
+            <span class="flow-title" data-i18n="mockupAi">AI is finding key points…</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="stats">
+      <div class="stat"><div><div class="stat-num">4</div><div class="stat-label" data-i18n="statCourses">Courses</div></div></div>
+      <div class="stat"><div><div class="stat-num">93</div><div class="stat-label" data-i18n="statFiles">Courseware files</div></div></div>
+      <div class="stat"><div><div class="stat-num">32</div><div class="stat-label" data-i18n="statPoints">Knowledge points</div></div></div>
+    </section>
+
+    <section class="feature-grid">
+      <article class="feature fade-up">
+        <span class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg></span>
+        <h3 data-i18n="feature1Title">Find it in seconds</h3>
+        <p data-i18n="feature1Desc">Type a concept or an alias. Results show the exact courseware and page.</p>
+      </article>
+      <article class="feature fade-up">
+        <span class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M19 16l.7 1.9L21.5 19l-1.8.7L19 21.5l-.7-1.8L16.5 19l1.8-1.1z"/></svg></span>
+        <h3 data-i18n="feature2Title">AI highlights the key points</h3>
+        <p data-i18n="feature2Desc">Pick any PDF or PPT and get a concise summary in English or Chinese.</p>
+      </article>
+      <article class="feature fade-up">
+        <span class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 20a5.5 5.5 0 0 1 11 0"/><path d="M16 5.2a3.2 3.2 0 0 1 0 5.6M17.5 14.4a5.5 5.5 0 0 1 3 5.6"/></svg></span>
+        <h3 data-i18n="feature3Title">Built for students</h3>
+        <p data-i18n="feature3Desc">Clean pages, subtle sounds and a small spinning blade while AI thinks.</p>
+      </article>
+    </section>
+
+    <section class="demo-strip">
+      <strong data-i18n="demoTitle">Want to look around first?</strong><br>
+      <span data-i18n="demoHint">Student</span> <code>student@123.com / 123456</code> ·
+      <span data-i18n="demoAdmin">Administrator</span> <code>admin@123.com / 123456</code>
+    </section>
+  </main>
+
+  <script src="/static/new/js/i18n.js"></script>
+  <script src="/static/new/js/sound.js"></script>
+  <script src="/static/new/js/common.js"></script>
+</body>
+</html>

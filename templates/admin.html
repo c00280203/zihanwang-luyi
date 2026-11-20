@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+    <title>Knowledge Point Administration</title>
+
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            background: #f5f7fa;
+            font-family: Arial, sans-serif;
+            color: #253247;
+        }
+
+        header {
+            background: #234b70;
+            color: white;
+            padding: 26px 10%;
+        }
+
+        header h1 { margin: 0 0 8px; }
+
+        main {
+            max-width: 900px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .panel {
+            background: white;
+            border: 1px solid #e0e5ec;
+            border-radius: 10px;
+            padding: 24px;
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin: 15px 0 7px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid #bac5d2;
+            border-radius: 6px;
+            font: inherit;
+        }
+
+        button {
+            margin-top: 16px;
+            padding: 11px 20px;
+            background: #234b70;
+            border: 0;
+            border-radius: 6px;
+            color: white;
+            cursor: pointer;
+        }
+
+        .point {
+            border-top: 1px solid #e3e8ef;
+            padding: 14px 0;
+        }
+
+        .point strong { display: block; }
+
+        .point p {
+            margin: 6px 0;
+            color: #64748b;
+        }
+
+        a { color: #245f91; }
+
+        #message {
+            font-weight: bold;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Knowledge Point Administration</h1>
+        <p>Manage the knowledge points recorded for each course.</p>
+    </header>
+
+    <main>
+        <p><a href="/">Back to Student Search</a></p>
+
+        <section class="panel">
+            <h2>Select Course</h2>
+
+            <label for="course">Course</label>
+            <select id="course"></select>
+        </section>
+
+        <section class="panel">
+            <h2>Add Knowledge Point</h2>
+
+            <form id="addForm">
+                <label for="name">Knowledge Point Name</label>
+                <input id="name" maxlength="200" required
+                       placeholder="e.g. SQL Views">
+
+                <label for="description">Description</label>
+                <textarea id="description" rows="3"
+                          placeholder="Short explanation"></textarea>
+
+                <button type="submit">Add Knowledge Point</button>
+            </form>
+
+            <p id="message" role="status"></p>
+        </section>
+
+        <section class="panel">
+            <h2>Existing Knowledge Points</h2>
+            <div id="pointList">Loading...</div>
+        </section>
+    
+<section class="panel">
+    <h2>PDF Resource Management</h2>
+
+    <p>
+        View the PDF files registered for the
+        selected course.
+    </p>
+
+    <button type="button" id="loadResourcesBtn">
+        View PDF Resources
+    </button>
+
+<h3>Add PDF Resource</h3>
+
+<form id="addResourceForm">
+    <label for="resourceTitle">PDF Title</label>
+    <input id="resourceTitle"
+           type="text"
+           maxlength="250"
+           required>
+
+    <label for="resourceUrl">PDF File URL</label>
+    <input id="resourceUrl"
+           type="text"
+           placeholder="/static/pdfs/example.pdf"
+           required>
+
+    <label for="resourcePages">Total Pages (checked against the PDF)</label>
+    <input id="resourcePages"
+           type="number"
+           min="1"
+           step="1"
+           required>
+
+    <button type="submit">Add PDF Resource</button>
+</form>
+
+<p id="resourceMessage" role="status"></p>
+
+<div id="resourceList"></div>
+
+</section>
+
+    </main>
+
+    <script>
+        const courseSelect = document.getElementById("course");
+        const pointList = document.getElementById("pointList");
+        const message = document.getElementById("message");
+
+        async function loadCourses() {
+            try {
+                const response = await fetch("/api/courses");
+                if (!response.ok) {
+                    throw new Error("Cannot load courses.");
+                }
+
+                const courses = await response.json();
+
+                for (const course of courses) {
+                    const option = document.createElement("option");
+                    option.value = course.course_code;
+                    option.textContent =
+                        `${course.course_code} - ${course.title}`;
+                    courseSelect.appendChild(option);
+                }
+
+                if (courses.some(c => c.course_code === "SOE206TC")) {
+                    courseSelect.value = "SOE206TC";
+                }
+
+                await loadKnowledgePoints();
+
+            } catch (error) {
+                message.textContent = error.message;
+            }
+        }
+
+        let loadKnowledgePointsRequestId = 0;
+async function loadKnowledgePoints() {
+    const requestId = ++loadKnowledgePointsRequestId;
+            pointList.replaceChildren();
+
+            const params = new URLSearchParams({
+                course: courseSelect.value
+            });
+
+            try {
+                const response = await fetch(
+                    `/api/admin/knowledge-points?${params}`
+                );
+                const data = await response.json();
+                if (requestId !== loadKnowledgePointsRequestId) return;
+
+                if (!response.ok) {
+                    throw new Error(data.error || "Loading failed.");
+                }
+
+                if (data.results.length === 0) {
+                    pointList.textContent =
+                        "No knowledge points recorded.";
+                    return;
+                }
+
+                for (const point of data.results) {
+                    const row = document.createElement("div");
+                    row.className = "point";
+
+                    const title = document.createElement("strong");
+                    title.textContent = point.name;
+
+                    const description = document.createElement("p");
+                    description.textContent =
+                        point.description || "No description.";
+
+                    
+row.appendChild(title);
+row.appendChild(description);
+
+// Edit button
+const editButton = document.createElement("button");
+editButton.type = "button";
+editButton.textContent = "Edit";
+editButton.addEventListener("click", function () {
+    editKnowledgePoint(point);
+});
+
+// Delete button
+const deleteButton = document.createElement("button");
+deleteButton.type = "button";
+deleteButton.textContent = "Delete";
+deleteButton.style.background = "#a33c3c";
+deleteButton.style.marginLeft = "10px";
+deleteButton.addEventListener("click", function () {
+    deleteKnowledgePoint(point);
+});
+
+
+row.appendChild(editButton);
+row.appendChild(deleteButton);
+
+// Button to manage aliases
+const aliasButton = document.createElement("button");
+aliasButton.type = "button";
+aliasButton.textContent = "Manage Aliases";
+aliasButton.style.marginLeft = "10px";
+
+const aliasPanel = document.createElement("div");
+aliasPanel.style.display = "none";
+aliasPanel.style.marginTop = "15px";
+aliasPanel.style.padding = "15px";
+aliasPanel.style.background = "#f5f7fa";
+aliasPanel.style.borderRadius = "6px";
+
+aliasButton.addEventListener("click", async function () {
+    if (aliasPanel.style.display === "none") {
+        aliasPanel.style.display = "block";
+        await loadAliases(point, aliasPanel);
+    } else {
+        aliasPanel.style.display = "none";
+    }
+});
+
+// Button to manage PDF locations
+const locationButton = document.createElement("button");
+locationButton.type = "button";
+locationButton.textContent = "Manage PDF Locations";
+locationButton.style.marginLeft = "10px";
+
+const locationPanel = document.createElement("div");
+locationPanel.style.display = "none";
+locationPanel.style.marginTop = "15px";
+locationPanel.style.padding = "15px";
+locationPanel.style.background = "#f5f7fa";
+locationPanel.style.borderRadius = "6px";
+
+locationButton.addEventListener("click", async function () {
+    if (locationPanel.style.display === "none") {
+        locationPanel.style.display = "block";
+        await loadPDFLocations(point, locationPanel);
+    } else {
+        locationPanel.style.display = "none";
+    }
+});
+
+row.appendChild(locationButton);
+row.appendChild(locationPanel);
+row.appendChild(aliasButton);
+row.appendChild(aliasPanel);
+pointList.appendChild(row);
+
+
+                }
+
+            } catch (error) {
+                if (requestId !== loadKnowledgePointsRequestId) return;
+                pointList.textContent = error.message;
+            }
+        }
+        
+// Edit a knowledge point
+async function editKnowledgePoint(point) {
+    const newName = window.prompt(
+        "Edit knowledge point name:",
+        point.name
+    );
+
+    if (newName === null) return;
+
+    const newDescription = window.prompt(
+        "Edit description:",
+        point.description
+    );
+
+    if (newDescription === null) return;
+
+    try {
+        const response = await fetch(
+            `/api/admin/knowledge-points/${point.id}`,
+            {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    course_code: courseSelect.value,
+                    name: newName,
+                    description: newDescription
+                })
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || "Update failed.");
+        }
+
+        await loadKnowledgePoints();
+        message.textContent = data.message;
+
+    } catch (error) {
+        message.textContent = error.message;
+        window.alert(error.message);
+    }
+}
+
+
+// Delete a knowledge point
+async function deleteKnowledgePoint(point) {
+    const confirmed = window.confirm(
+        `Delete "${point.name}"?\n\n` +
+        "Its aliases and PDF mappings will also be deleted."
+    );
+
+    if (!confirmed) return;
+
+    try {
+        const params = new URLSearchParams({
+            course: courseSelect.value
+        });
+
+        const response = await fetch(
+            `/api/admin/knowledge-points/${point.id}?${params}`,
+            {
+                method: "DELETE"
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || "Deletion failed.");
+        }
+
+        await loadKnowledgePoints();
+        message.textContent = data.message;
+
+    } catch (error) {
+        message.textContent = error.message;
+        window.alert(error.message);
+    }
+}
+
+// Send requests to the alias API
+async function aliasRequest(url, method = "GET", body = null) {
+    const options = { method };
+
+    if (body !== null) {
+        options.headers = {
+            "Content-Type": "application/json"
+        };
+        options.body = JSON.stringify(body);
+    }
+
+    const response = await fetch(url, options);
+    const data = await response.json();
+
+    if (!response.ok) {
+        throw new Error(data.error || "Alias operation failed.");
+    }
+
+    return data;
+}
+
+
+// Display and manage aliases for one knowledge point
+async function loadAliases(point, panel) {
+    panel.replaceChildren();
+
+    const courseCode = courseSelect.value;
+    const baseUrl =
+        `/api/admin/knowledge-points/${point.id}/aliases`;
+
+    try {
+        const params = new URLSearchParams({
+            course: courseCode
+        });
+
+        const data = await aliasRequest(`${baseUrl}?${params}`);
+
+        const heading = document.createElement("strong");
+        heading.textContent = `Aliases for ${point.name}`;
+        panel.appendChild(heading);
+
+        if (data.results.length === 0) {
+            const empty = document.createElement("p");
+            empty.textContent = "No aliases recorded.";
+            panel.appendChild(empty);
+        }
+
+        for (const item of data.results) {
+            const row = document.createElement("div");
+            row.style.marginTop = "12px";
+
+            const name = document.createElement("span");
+            name.textContent = item.alias + "  ";
+            row.appendChild(name);
+
+            const edit = document.createElement("button");
+            edit.type = "button";
+            edit.textContent = "Edit Alias";
+            edit.style.marginLeft = "12px";
+
+            edit.addEventListener("click", async function () {
+                const newAlias = window.prompt(
+                    "Edit alias:", item.alias
+                );
+
+                if (newAlias === null) return;
+
+                try {
+                    const result = await aliasRequest(
+                        `${baseUrl}/${item.id}`,
+                        "PUT",
+                        {
+                            course_code: courseCode,
+                            alias: newAlias
+                        }
+                    );
+
+                    message.textContent = result.message;
+                    await loadAliases(point, panel);
+
+                } catch (error) {
+                    message.textContent = error.message;
+                }
+            });
+
+            const remove = document.createElement("button");
+            remove.type = "button";
+            remove.textContent = "Delete Alias";
+            remove.style.background = "#a33c3c";
+            remove.style.marginLeft = "8px";
+
+            remove.addEventListener("click", async function () {
+                const confirmed = window.confirm(
+                    `Delete alias "${item.alias}"?`
+                );
+
+                if (!confirmed) return;
+
+                try {
+                    const result = await aliasRequest(
+                        `${baseUrl}/${item.id}?${params}`,
+                        "DELETE"
+                    );
+
+                    message.textContent = result.message;
+                    await loadAliases(point, panel);
+
+                } catch (error) {
+                    message.textContent = error.message;
+                }
+            });
+
+            row.appendChild(edit);
+            row.appendChild(remove);
+            panel.appendChild(row);
+        }
+
+        const add = document.createElement("button");
+        add.type = "button";
+        add.textContent = "Add Alias";
+
+        add.addEventListener("click", async function () {
+            const newAlias = window.prompt(
+                `New alias for ${point.name}:`
+            );
+
+            if (newAlias === null) return;
+
+            try {
+                const result = await aliasRequest(
+                    baseUrl,
+                    "POST",
+                    {
+                        course_code: courseCode,
+                        alias: newAlias
+                    }
+                );
+
+                message.textContent = result.message;
+                await loadAliases(point, panel);
+
+            } catch (error) {
+                message.textContent = error.message;
+            }
+        });
+
+        panel.appendChild(add);
+
+    } catch (error) {
+        panel.textContent = error.message;
+    }
+}
+
+// Update one PDF page mapping
+async function editPDFLocation(point, location, panel) {
+    const newPageText = window.prompt(
+        "Enter the new PDF page number:",
+        String(location.page_number)
+    );
+
+    if (newPageText === null) return;
+
+    const newPage = Number(newPageText);
+
+    if (!Number.isInteger(newPage) || newPage < 1) {
+        window.alert("Please enter a positive whole number.");
+        return;
+    }
+
+    const newNote = window.prompt(
+        "Edit the location note:",
+        location.note || ""
+    );
+
+    if (newNote === null) return;
+
+    try {
+        const response = await fetch(
+            `/api/admin/knowledge-points/${point.id}` +
+            `/locations/${location.id}`,
+            {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    course_code: courseSelect.value,
+                    page_number: newPage,
+                    note: newNote
+                })
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(
+                data.error || "Unable to update PDF location."
+            );
+        }
+
+        message.textContent = data.message;
+        await loadPDFLocations(point, panel);
+
+    } catch (error) {
+        message.textContent = error.message;
+        window.alert(error.message);
+    }
+}
+
+
+// Delete one PDF page mapping
+async function deletePDFLocation(point, location, panel) {
+    const confirmed = window.confirm(
+        `Delete ${location.resource_title}, ` +
+        `Page ${location.page_number}?\n\n` +
+        "This will remove the mapping, not the PDF file."
+    );
+
+    if (!confirmed) return;
+
+    const params = new URLSearchParams({
+        course: courseSelect.value
+    });
+
+    try {
+        const response = await fetch(
+            `/api/admin/knowledge-points/${point.id}` +
+            `/locations/${location.id}?${params}`,
+            {
+                method: "DELETE"
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(
+                data.error || "Unable to delete PDF location."
+            );
+        }
+
+        message.textContent = data.message;
+        await loadPDFLocations(point, panel);
+
+    } catch (error) {
+        message.textContent = error.message;
+        window.alert(error.message);
+    }
+}
+
+// Load PDF resources and mapped pages for one knowledge point
+async function loadPDFLocations(point, panel) {
+    panel.replaceChildren();
+
+    const courseCode = courseSelect.value;
+    const params = new URLSearchParams({
+        course: courseCode
+    });
+
+    const baseUrl =
+        `/api/admin/knowledge-points/${point.id}/locations`;
+
+    try {
+        const [resourceResponse, locationResponse] =
+            await Promise.all([
+                fetch(`/api/admin/resources?${params}`),
+                fetch(`${baseUrl}?${params}`)
+            ]);
+
+        const resourceData = await resourceResponse.json();
+        const locationData = await locationResponse.json();
+
+        if (!resourceResponse.ok || !locationResponse.ok) {
+            throw new Error(
+                resourceData.error ||
+                locationData.error ||
+                "Unable to load PDF locations."
+            );
+        }
+
+        const heading = document.createElement("h4");
+        heading.textContent = `PDF Locations for ${point.name}`;
+        panel.appendChild(heading);
+
+        // Display existing mappings
+        if (locationData.results.length === 0) {
+            const empty = document.createElement("p");
+            empty.textContent = "No PDF locations recorded.";
+            panel.appendChild(empty);
+        }
+
+        
+for (const location of locationData.results) {
+    const row = document.createElement("div");
+    row.style.padding = "10px 0";
+    row.style.borderBottom = "1px solid #dce3eb";
+
+    const details = document.createElement("div");
+    details.textContent =
+        `${location.resource_title} - Page ${location.page_number}` +
+        (location.note ? ` (${location.note})` : "");
+
+    // Edit PDF location
+    const editButton = document.createElement("button");
+    editButton.type = "button";
+    editButton.textContent = "Edit Location";
+
+    editButton.addEventListener("click", function () {
+        editPDFLocation(point, location, panel);
+    });
+
+    // Delete PDF location
+    const deleteButton = document.createElement("button");
+    deleteButton.type = "button";
+    deleteButton.textContent = "Delete Location";
+    deleteButton.style.background = "#a33c3c";
+    deleteButton.style.marginLeft = "10px";
+
+    deleteButton.addEventListener("click", function () {
+        deletePDFLocation(point, location, panel);
+    });
+
+    row.appendChild(details);
+    row.appendChild(editButton);
+    row.appendChild(deleteButton);
+    panel.appendChild(row);
+}
+
+
+        // Create a form for adding a new mapping
+        const form = document.createElement("form");
+
+        const resourceLabel = document.createElement("label");
+        resourceLabel.textContent = "PDF Resource";
+
+        const resourceSelect = document.createElement("select");
+
+        for (const resource of resourceData.results) {
+            const option = document.createElement("option");
+            option.value = resource.id;
+            option.textContent =
+                `${resource.title} (${resource.total_pages} pages)`;
+            resourceSelect.appendChild(option);
+        }
+
+        const pageLabel = document.createElement("label");
+        pageLabel.textContent = "Page Number";
+
+        const pageInput = document.createElement("input");
+        pageInput.type = "number";
+        pageInput.min = "1";
+        pageInput.step = "1";
+        pageInput.required = true;
+
+        function updateMaxPage() {
+            const selected = resourceData.results.find(
+                r => r.id === Number(resourceSelect.value)
+            );
+
+            if (selected) {
+                pageInput.max = String(selected.total_pages);
+            }
+        }
+
+        resourceSelect.addEventListener(
+            "change", updateMaxPage
+        );
+        updateMaxPage();
+
+        const noteLabel = document.createElement("label");
+        noteLabel.textContent = "Note (optional)";
+
+        const noteInput = document.createElement("input");
+        noteInput.type = "text";
+        noteInput.maxLength = 500;
+        noteInput.placeholder = "e.g. LEFT JOIN examples";
+
+        const addButton = document.createElement("button");
+        addButton.type = "submit";
+        addButton.textContent = "Add PDF Location";
+
+        if (resourceData.results.length === 0) {
+            addButton.disabled = true;
+        }
+
+        form.appendChild(resourceLabel);
+        form.appendChild(resourceSelect);
+        form.appendChild(pageLabel);
+        form.appendChild(pageInput);
+        form.appendChild(noteLabel);
+        form.appendChild(noteInput);
+        form.appendChild(addButton);
+
+        form.addEventListener("submit", async function (event) {
+            event.preventDefault();
+
+            try {
+                const response = await fetch(baseUrl, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        course_code: courseCode,
+                        resource_id: Number(resourceSelect.value),
+                        page_number: Number(pageInput.value),
+                        note: noteInput.value
+                    })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(
+                        data.error || "Unable to add PDF location."
+                    );
+                }
+
+                message.textContent = data.message;
+                await loadPDFLocations(point, panel);
+
+            } catch (error) {
+                message.textContent = error.message;
+                window.alert(error.message);
+            }
+        });
+
+        panel.appendChild(form);
+
+    } catch (error) {
+        panel.textContent = error.message;
+    }
+}
+
+// Edit a PDF resource
+async function editPDFResource(resource) {
+    const title = window.prompt(
+        "Edit PDF title:",
+        resource.title
+    );
+    if (title === null) return;
+
+    const fileUrl = window.prompt(
+        "Edit PDF file URL:",
+        resource.file_url
+    );
+    if (fileUrl === null) return;
+
+    const pagesText = window.prompt(
+        "Edit total pages:",
+        String(resource.total_pages)
+    );
+    if (pagesText === null) return;
+
+    const totalPages = Number(pagesText);
+
+    if (
+        pagesText.trim() === "" ||
+        !Number.isInteger(totalPages) ||
+        totalPages < 1
+    ) {
+        window.alert("Total pages must be a positive integer.");
+        return;
+    }
+
+    const status = document.getElementById("resourceMessage");
+
+    try {
+        const response = await fetch(
+            `/api/admin/resources/${resource.id}`,
+            {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    course_code: courseSelect.value,
+                    title: title,
+                    file_url: fileUrl,
+                    total_pages: totalPages
+                })
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || "Update failed.");
+        }
+
+        await loadResources();
+        status.textContent = data.message;
+
+    } catch (error) {
+        status.textContent = error.message;
+        window.alert(error.message);
+    }
+}
+
+
+// Delete a PDF resource
+async function deletePDFResource(resource) {
+    const confirmed = window.confirm(
+        `Delete resource "${resource.title}"?\n\n` +
+        "The PDF file itself will not be deleted."
+    );
+
+    if (!confirmed) return;
+
+    const params = new URLSearchParams({
+        course: courseSelect.value
+    });
+
+    const status = document.getElementById("resourceMessage");
+
+    try {
+        const response = await fetch(
+            `/api/admin/resources/${resource.id}?${params}`,
+            {
+                method: "DELETE"
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || "Deletion failed.");
+        }
+
+        await loadResources();
+        status.textContent = data.message;
+
+    } catch (error) {
+        status.textContent = error.message;
+        window.alert(error.message);
+    }
+}
+
+// Display PDF resources for the selected course
+let loadResourcesRequestId = 0;
+async function loadResources() {
+    const requestId = ++loadResourcesRequestId;
+    const list = document.getElementById("resourceList");
+    list.replaceChildren();
+
+    const params = new URLSearchParams({
+        course: courseSelect.value
+    });
+
+    try {
+        const response = await fetch(
+            `/api/admin/resources?${params}`
+        );
+
+        const data = await response.json();
+                if (requestId !== loadResourcesRequestId) return;
+
+        if (!response.ok) {
+            throw new Error(
+                data.error || "Unable to load resources."
+            );
+        }
+
+        if (data.results.length === 0) {
+            list.textContent = "No PDF resources found.";
+            return;
+        }
+
+        for (const resource of data.results) {
+            const item = document.createElement("div");
+            item.className = "point";
+
+            const title = document.createElement("strong");
+            title.textContent = resource.title;
+
+            const details = document.createElement("p");
+            details.textContent =
+                `${resource.total_pages} pages`;
+
+            const path = document.createElement("p");
+            path.textContent = resource.file_url;
+
+            
+item.appendChild(title);
+item.appendChild(details);
+item.appendChild(path);
+
+// Edit Resource button
+const editButton = document.createElement("button");
+editButton.type = "button";
+editButton.textContent = "Edit Resource";
+
+editButton.addEventListener("click", function () {
+    editPDFResource(resource);
+});
+
+// Delete Resource button
+const deleteButton = document.createElement("button");
+deleteButton.type = "button";
+deleteButton.textContent = "Delete Resource";
+deleteButton.style.background = "#a33c3c";
+deleteButton.style.marginLeft = "10px";
+
+deleteButton.addEventListener("click", function () {
+    deletePDFResource(resource);
+});
+
+item.appendChild(editButton);
+item.appendChild(deleteButton);
+list.appendChild(item);
+
+        }
+
+    } catch (error) {
+                if (requestId !== loadResourcesRequestId) return;
+        list.textContent = error.message;
+    }
+}
+
+document.getElementById("loadResourcesBtn")
+    .addEventListener("click", loadResources);
+
+courseSelect.addEventListener("change", loadResources);
+
+document.getElementById("addResourceForm")
+    .addEventListener("submit", async function (event) {
+        event.preventDefault();
+
+        const status = document.getElementById("resourceMessage");
+        status.textContent = "Saving...";
+
+        try {
+            const response = await fetch("/api/admin/resources", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    course_code: courseSelect.value,
+                    title: document.getElementById("resourceTitle").value,
+                    file_url: document.getElementById("resourceUrl").value,
+                    total_pages: Number(
+                        document.getElementById("resourcePages").value
+                    )
+                })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(
+                    data.error || "Unable to add PDF resource."
+                );
+            }
+
+            document.getElementById("addResourceForm").reset();
+            status.textContent = data.message;
+            await loadResources();
+
+        } catch (error) {
+            status.textContent = error.message;
+        }
+    });
+
+        document.getElementById("addForm")
+            .addEventListener("submit", async function (event) {
+                event.preventDefault();
+
+                const nameInput = document.getElementById("name");
+                const descriptionInput =
+                    document.getElementById("description");
+
+                message.textContent = "Saving...";
+
+                try {
+                    const response = await fetch(
+                        "/api/admin/knowledge-points",
+                        {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify({
+                                course_code: courseSelect.value,
+                                name: nameInput.value,
+                                description: descriptionInput.value
+                            })
+                        }
+                    );
+
+                    const data = await response.json();
+
+                    if (!response.ok) {
+                        throw new Error(
+                            data.error || "Unable to save."
+                        );
+                    }
+
+                    nameInput.value = "";
+                    descriptionInput.value = "";
+
+                    await loadKnowledgePoints();
+                    message.textContent = data.message;
+
+                } catch (error) {
+                    message.textContent = error.message;
+                }
+            });
+
+        courseSelect.addEventListener("change", function () {
+            message.textContent = "";
+            loadKnowledgePoints();
+        });
+
+        loadCourses();
+    </script>
+</body>
+</html>

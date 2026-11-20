@@ -1,0 +1,255 @@
+/* Shared internationalisation helper. Default language is English. */
+(function () {
+  const DICT = {
+    en: {
+      brand: "Knowledge Hub",
+      home: "Home",
+      admin: "Admin",
+      login: "Log in",
+      register: "Sign up",
+      logout: "Log out",
+      landingTitle: "Turn lecture piles into a treasure map.",
+      landingSubtitle: "Search one concept, land on the exact slide, and let AI highlight what matters.",
+      landingCta: "Start exploring",
+      landingSecondary: "Create free account",
+      landingNote: "Four courses · 90+ courseware files · Instant page lookup",
+      feature1Title: "Find it in seconds",
+      feature1Desc: "Type a concept or an alias. Results show the exact courseware and page.",
+      feature2Title: "AI highlights the key points",
+      feature2Desc: "Pick any PDF or PPT and get a concise summary in English or Chinese.",
+      feature3Title: "Built for students",
+      feature3Desc: "Clean pages, subtle sounds and a small spinning blade while AI thinks.",
+      demoTitle: "Want to look around first?",
+      demoHint: "Student",
+      demoAdmin: "Administrator",
+      heroTitle: "Find knowledge points in seconds",
+      heroSubtitle: "Ask in your own words, match concepts with AI, and jump straight to the right page.",
+      selectCourse: "Select a course",
+      allCourses: "All courses (coarse search)",
+      keywordLabel: "Keyword or question",
+      allCoursesShort: "All courses",
+      searchPlaceholder: "Ask in your own words, e.g. I wanna study Algorithm",
+      search: "Search",
+      aiSearch: "AI Search",
+      aiHint: "Tip: ask in your own words. AI matches meaning, not just keywords.",
+      aiThinkingSub: "Understanding your question and ranking related topics...",
+      aiAnswerTitle: "AI answer",
+      aiBadge: "AI matched",
+      aiNotice: "AI is unavailable right now, so keyword results are shown instead.",
+      keywordFallback: "Keyword results",
+      aiReason: "Why this matches",
+      aiEmpty: "No confident match found. Try rephrasing or browse all.",
+      askFirst: "Describe what you want to learn first.",
+      browseAll: "Browse all",
+      results: "Results",
+      noResults: "No knowledge point found. Try another keyword or All courses.",
+      noLocation: "No page mapping recorded yet.",
+      foundIn: "Course",
+      fuzzyHint: "Close match",
+      openPdf: "Open PDF",
+      openPpt: "Download PPT",
+      page: "Page",
+      pages: "pages",
+      slides: "slides",
+      filesFound: "Files",
+      noLibrary: "No courseware in this course yet.",
+      aiSummary: "AI summary",
+      summarize: "Summarize with AI",
+      summarizing: "Asking AI...",
+      summaryTitle: "Key points",
+      courseware: "Courseware",
+      loginTitle: "Welcome back",
+      loginSubtitle: "Log in to continue",
+      registerTitle: "Create student account",
+      registerSubtitle: "Registration is open to everyone",
+      email: "Email",
+      password: "Password",
+      confirmPassword: "Confirm password",
+      haveAccount: "Already have an account?",
+      noAccount: "No account yet?",
+      backHome: "Back to home",
+      accounts: "Accounts",
+      addAccount: "Add account",
+      role: "Role",
+      delete: "Delete",
+      create: "Create",
+      upload: "Upload courseware",
+      title: "Title (optional; file name is used when empty)",
+      file: "Files (PDF / PPTX)",
+      dropTitle: "Drop files here or click to choose",
+      dropHint: "You can select several files at once.",
+      uploading: "Uploading",
+      uploadBtn: "Upload",
+      adminPanel: "Administration",
+      adminSubtitle: "Manage accounts and courseware.",
+      accountManagement: "Account management",
+      coursewareManagement: "Courseware management",
+      admins: "Administrators",
+      students: "Students",
+      language: "Language",
+      landingBadge: "For curious students",
+      landingTitleA: "Turn lecture piles into a",
+      landingTitleB: "treasure map.",
+      mockupQuery: "in all courses",
+      mockupPoint: "Third Normal Form",
+      mockupCourse: "SOE206TC · Database",
+      mockupFile: "Database_Design_Lecture.pdf",
+      mockupPage: "Page 24",
+      mockupAi: "AI is finding key points…",
+      statCourses: "Courses",
+      statFiles: "Courseware files",
+      statPoints: "Knowledge points",
+      asideTitle: "Your semester, searchable.",
+      asideDesc: "Find any concept in the exact slide, then let AI turn a long deck into a few key points.",
+      asideFoot: "Four courses · instant page lookup · AI summaries",
+      searchHint: "Type a concept or alias, then let Knowledge Hub do the digging.",
+      thinkingStage: "AI Thinking",
+      thinkingSub: "Reading the courseware and finding key points…"
+    },
+    zh: {
+      brand: "知识导航站",
+      home: "首页",
+      admin: "管理后台",
+      login: "登录",
+      register: "注册",
+      logout: "退出登录",
+      landingTitle: "把厚厚的课件变成一张寻宝图。",
+      landingSubtitle: "搜一个概念，直接跳到对应幻灯片，再让 AI 帮你划重点。",
+      landingCta: "开始探索",
+      landingSecondary: "免费注册",
+      landingNote: "四门课程 · 90+ 份课件 · 秒查页码",
+      feature1Title: "几秒钟就能找到",
+      feature1Desc: "输入知识点或别名，结果直接显示课件和页码。",
+      feature2Title: "AI 帮你划重点",
+      feature2Desc: "任选 PDF 或 PPT，生成中英文精简总结。",
+      feature3Title: "为学生而设计",
+      feature3Desc: "干净的页面、轻提示音，AI 思考时有小小的旋转叶片。",
+      demoTitle: "想先看看？",
+      demoHint: "学生",
+      demoAdmin: "管理员",
+      heroTitle: "几秒钟找到知识点",
+      heroSubtitle: "用一句话提问，让 AI 精准匹配概念，直接跳到对应页面。",
+      selectCourse: "选择课程",
+      allCourses: "全部课程（粗搜索）",
+      keywordLabel: "关键词或问题",
+      allCoursesShort: "全部课程",
+      searchPlaceholder: "用一句话提问，例如：我想学算法",
+      search: "搜索",
+      aiSearch: "AI 搜索",
+      aiHint: "提示：用自然语言提问即可，AI 会按语义匹配，不只是关键词。",
+      aiThinkingSub: "正在理解你的问题并排序相关知识点…",
+      aiAnswerTitle: "AI 回答",
+      aiBadge: "AI 匹配",
+      aiNotice: "AI 暂时不可用，已改用关键词搜索结果。",
+      keywordFallback: "关键词结果",
+      aiReason: "匹配理由",
+      aiEmpty: "没有找到把握较高的匹配，换个说法或浏览全部试试。",
+      askFirst: "先描述一下你想学什么。",
+      browseAll: "浏览全部",
+      results: "结果",
+      noResults: "没有找到知识点。换个关键词，或试试「全部课程」。",
+      noLocation: "暂无页码映射。",
+      foundIn: "所属课程",
+      fuzzyHint: "模糊匹配",
+      openPdf: "打开 PDF",
+      openPpt: "下载 PPT",
+      page: "第",
+      pages: "页",
+      slides: "页",
+      filesFound: "文件数",
+      noLibrary: "这门课程还没有课件。",
+      aiSummary: "AI 总结",
+      summarize: "AI 总结重点",
+      summarizing: "AI 正在总结...",
+      summaryTitle: "重点内容",
+      courseware: "课件",
+      loginTitle: "欢迎回来",
+      loginSubtitle: "登录后继续",
+      registerTitle: "创建学生账号",
+      registerSubtitle: "所有人都可以自行注册",
+      email: "邮箱",
+      password: "密码",
+      confirmPassword: "确认密码",
+      haveAccount: "已有账号？",
+      noAccount: "还没有账号？",
+      backHome: "返回首页",
+      accounts: "账号",
+      addAccount: "添加账号",
+      role: "角色",
+      delete: "删除",
+      create: "创建",
+      upload: "上传课件",
+      title: "标题（可留空，默认用文件名）",
+      file: "文件（PDF / PPTX）",
+      dropTitle: "把文件拖到这里，或点击选择",
+      dropHint: "可以一次选择多个文件。",
+      uploading: "正在上传",
+      uploadBtn: "上传",
+      adminPanel: "管理后台",
+      adminSubtitle: "管理账号和课件。",
+      accountManagement: "账号管理",
+      coursewareManagement: "课件管理",
+      admins: "管理员",
+      students: "学生",
+      language: "语言",
+      landingBadge: "为好奇的学生而造",
+      landingTitleA: "把如山的课件，变成一张",
+      landingTitleB: "寻宝图。",
+      mockupQuery: "在全部课程中",
+      mockupPoint: "第三范式",
+      mockupCourse: "SOE206TC · 数据库",
+      mockupFile: "数据库设计_第3讲.pdf",
+      mockupPage: "第 24 页",
+      mockupAi: "AI 正在划重点…",
+      statCourses: "门课程",
+      statFiles: "份课件",
+      statPoints: "个知识点",
+      asideTitle: "让整个学期，一搜可达。",
+      asideDesc: "输入概念即可定位到对应幻灯片，再让 AI 把厚厚的课件浓缩成几条重点。",
+      asideFoot: "四门课程 · 秒级页码定位 · AI 总结",
+      searchHint: "输入知识点或别名，剩下的交给我们。",
+      thinkingStage: "AI 思考中",
+      thinkingSub: "正在阅读课件并寻找重点…"
+    }
+  };
+
+  function currentLang() {
+    return localStorage.getItem("kh_lang") === "zh" ? "zh" : "en";
+  }
+
+  function t(key) {
+    const lang = currentLang();
+    return (DICT[lang] && DICT[lang][key]) || DICT.en[key] || key;
+  }
+
+  function apply() {
+    document.querySelectorAll("[data-i18n]").forEach(function (el) {
+      const key = el.getAttribute("data-i18n");
+      const value = t(key);
+      if (el.hasAttribute("data-i18n-placeholder")) {
+        el.setAttribute("placeholder", value);
+      } else {
+        el.textContent = value;
+      }
+    });
+    const btn = document.getElementById("langBtn");
+    if (btn) btn.textContent = currentLang() === "zh" ? "EN" : "中文";
+    document.documentElement.lang = currentLang() === "zh" ? "zh-CN" : "en";
+  }
+
+  function toggle() {
+    localStorage.setItem("kh_lang", currentLang() === "zh" ? "en" : "zh");
+    apply();
+    if (window.dispatchEvent) {
+      window.dispatchEvent(new CustomEvent("languagechange"));
+    }
+  }
+
+  window.I18n = { t: t, apply: apply, toggle: toggle, currentLang: currentLang };
+
+  document.addEventListener("DOMContentLoaded", function () {
+    apply();
+    const btn = document.getElementById("langBtn");
+    if (btn) btn.addEventListener("click", toggle);
+  });
+})();

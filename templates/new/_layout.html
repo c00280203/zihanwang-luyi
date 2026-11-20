@@ -1,0 +1,20 @@
+{% macro topbar(show_nav=True) %}
+<header class="topbar">
+  <a class="brand" href="/">
+    <span class="brand-mark">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m15.6 8.4-2.1 5.1-5.1 2.1 2.1-5.1z"/></svg>
+    </span>
+    <span data-i18n="brand">Knowledge Hub</span>
+  </a>
+  <div class="top-actions">
+    <button id="langBtn" class="lang-btn" type="button">中文</button>
+    {% if show_nav %}
+    <a class="btn ghost small" href="/" data-i18n="home">Home</a>
+    <a class="btn ghost small" href="/admin" id="adminNav" data-i18n="admin">Admin</a>
+    <a class="btn small" href="/login" id="loginNav" data-i18n="login">Log in</a>
+    <a class="btn ghost small" href="/register" id="registerNav" data-i18n="register">Sign up</a>
+    <button class="btn danger small hidden" id="logoutBtn" type="button" data-i18n="logout">Log out</button>
+    {% endif %}
+  </div>
+</header>
+{% endmacro %}

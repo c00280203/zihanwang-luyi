@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Knowledge Navigator</title>
+
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            background: #f5f7fa;
+            color: #253247;
+            font-family: Arial, sans-serif;
+        }
+
+        header {
+            background: #234b70;
+            color: white;
+            padding: 30px 10%;
+        }
+
+        header h1 { margin: 0 0 8px; }
+
+        main {
+            max-width: 900px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .panel, .result-card {
+            background: white;
+            padding: 24px;
+            border: 1px solid #e0e5ec;
+            border-radius: 10px;
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin: 14px 0 7px;
+        }
+
+        select, input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #bac5d2;
+            border-radius: 6px;
+            font-size: 15px;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 18px;
+        }
+
+        button {
+            padding: 11px 20px;
+            border: 0;
+            border-radius: 6px;
+            cursor: pointer;
+            background: #234b70;
+            color: white;
+        }
+
+        button.secondary {
+            background: #e7edf3;
+            color: #234b70;
+        }
+
+        .location {
+            padding: 12px 0;
+            border-top: 1px solid #e5e9ef;
+        }
+
+        .location a {
+            display: inline-block;
+            margin-top: 7px;
+            color: #1b628f;
+        }
+
+        .hint {
+            color: #68788b;
+            font-size: 13px;
+        }
+
+        #status { margin: 16px 0; }
+
+        @media (max-width: 600px) {
+            .actions { flex-direction: column; }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Course Knowledge Navigator</h1>
+        <p>Find knowledge points in your course PDF materials.</p>
+    </header>
+
+    <main>
+        <section class="panel">
+            <h2>Find a Knowledge Point</h2>
+
+            <form id="searchForm">
+                <label for="course">Select a course</label>
+                <select id="course" required></select>
+
+                <label for="keyword">Knowledge point or alias</label>
+                <input
+                    id="keyword"
+                    type="text"
+                    placeholder="e.g. 3NF or Third Normal Form"
+                    maxlength="200"
+                >
+
+                <div class="actions">
+                    <button type="submit">Search</button>
+                    <button type="button" class="secondary" id="browseBtn">
+                        Browse All
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <p id="status" role="status"></p>
+        <section id="results" aria-label="Search results"></section>
+
+        
+<p class="hint">
+    PDF page navigation depends on your browser's PDF viewer.
+    If the page does not open automatically, use the page
+    number shown above.
+</p>
+
+    </main>
+
+    <script>
+        const courseSelect = document.getElementById("course");
+        const keywordInput = document.getElementById("keyword");
+        const resultsArea = document.getElementById("results");
+        const statusText = document.getElementById("status");
+
+        async function loadCourses() {
+            try {
+                const response = await fetch("/api/courses");
+
+                if (!response.ok) {
+                    throw new Error("Cannot load courses.");
+                }
+
+                const courses = await response.json();
+
+                for (const course of courses) {
+                    const option = document.createElement("option");
+                    option.value = course.course_code;
+                    option.textContent =
+                        `${course.course_code} - ${course.title}`;
+                    courseSelect.appendChild(option);
+                }
+
+                if (courses.some(c => c.course_code === "SOE206TC")) {
+                    courseSelect.value = "SOE206TC";
+                }
+
+                await searchKnowledgePoints();
+
+            } catch (error) {
+                statusText.textContent = error.message;
+            }
+        }
+
+        let searchRequestId = 0;
+
+        async function searchKnowledgePoints() {
+            const requestId = ++searchRequestId;
+            resultsArea.replaceChildren();
+            statusText.textContent = "Searching...";
+
+            const params = new URLSearchParams({
+                course: courseSelect.value,
+                q: keywordInput.value.trim()
+            });
+
+            try {
+                const response = await fetch(`/api/search?${params}`);
+                const data = await response.json();
+                if (requestId !== searchRequestId) return;
+
+                if (!response.ok) {
+                    throw new Error(data.error || "Search failed.");
+                }
+
+                if (data.count === 0) {
+                    statusText.textContent = "No knowledge point found.";
+                    return;
+                }
+
+                statusText.textContent =
+                    `${data.count} knowledge point(s) found.`;
+
+                for (const point of data.results) {
+                    const card = document.createElement("article");
+                    card.className = "result-card";
+
+                    const heading = document.createElement("h3");
+                    heading.textContent = point.name;
+                    card.appendChild(heading);
+                    if (point.description) {
+                        const description = document.createElement("p");
+                        description.textContent = point.description;
+                        card.appendChild(description);
+                    }
+
+                    if (point.locations.length === 0) {
+                        const message = document.createElement("p");
+                        message.textContent = "No PDF location recorded.";
+                        card.appendChild(message);
+                    }
+
+                    for (const location of point.locations) {
+                        const row = document.createElement("div");
+                        row.className = "location";
+
+                        const details = document.createElement("div");
+                        details.textContent =
+                            `${location.resource_title} - Page ${location.page_number}`;
+
+                        const link = document.createElement("a");
+                        link.href =
+                            `${location.file_url}#page=${location.page_number}`;
+                        link.target = "_blank";
+                        link.rel = "noopener noreferrer";
+                        link.textContent = "Open PDF";
+
+                        row.appendChild(details);
+                        if (location.note) {
+                            const note = document.createElement("p");
+                            note.textContent = location.note;
+                            row.appendChild(note);
+                        }
+                        row.appendChild(link);
+                        card.appendChild(row);
+                    }
+
+                    resultsArea.appendChild(card);
+                }
+
+            } catch (error) {
+                if (requestId !== searchRequestId) return;
+                statusText.textContent = error.message;
+            }
+        }
+
+        document.getElementById("searchForm").addEventListener(
+            "submit",
+            function (event) {
+                event.preventDefault();
+                searchKnowledgePoints();
+            }
+        );
+
+        document.getElementById("browseBtn").addEventListener(
+            "click",
+            function () {
+                keywordInput.value = "";
+                searchKnowledgePoints();
+            }
+        );
+
+        courseSelect.addEventListener("change", searchKnowledgePoints);
+
+        loadCourses();
+    </script>
+</body>
+</html>
